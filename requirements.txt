@@ -3,3 +3,4 @@ ultralytics
 transformers
 pdf2image
 opencv-python-headless
+paddleocr
