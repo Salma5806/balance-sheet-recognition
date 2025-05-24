@@ -45,8 +45,6 @@ def extract_year(text):
     return None
 model_path = gdown.download("https://drive.google.com/drive/folders/1TnwJKw1dwi0XcJLTWe91Pikof4GX4b6T?usp=drive_link")
 def predict_labels(image_path, model=model_path):
-    
-
     processor = LayoutLMv3Processor.from_pretrained(model_path)
     model = AutoModelForTokenClassification.from_pretrained(model_path)
     model.eval()
