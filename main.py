@@ -6,6 +6,7 @@ import tempfile
 import os
 import cv2
 from PIL import Image
+from predict import predict_labels
 
 # Set up the Streamlit app
 st.set_page_config(page_title="Table Detection App", layout="wide")
