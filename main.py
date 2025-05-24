@@ -10,7 +10,7 @@ from predict import predict_labels
 from app import app_main
 
 # Set up the Streamlit app
-st.set_page_config(page_title="Table Detection App", layout="wide")
+#st.set_page_config(page_title="Table Detection App", layout="wide")
 st.sidebar.title("📁 Navigation")
 page = st.sidebar.radio("Go to:", ["Main", "App", "Financial Dashboard"])
 
