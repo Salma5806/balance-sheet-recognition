@@ -6,6 +6,7 @@ import numpy as np
 import re
 import pandas as pd
 import os
+import zipfile
 
 def unnormalize_box(box, width, height):
     return [
