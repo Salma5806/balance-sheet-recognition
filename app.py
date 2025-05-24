@@ -6,8 +6,10 @@ from PIL import ImageDraw, ImageFont
 import os
 from PIL import Image
 
+# set_page_config doit être appelé tout de suite, dès le début du script
+st.set_page_config(page_title="LayoutLMv3 Prediction", layout="centered")
+
 def app_main():
-    st.set_page_config(page_title="LayoutLMv3 Prediction", layout="centered")
     st.title("🔍 Predict Labels with LayoutLMv3")
 
     OUTPUT_DIR = "output_images"
