@@ -5,3 +5,4 @@ pdf2image
 opencv-python-headless
 paddleocr
 paddlepaddle
+gdown
