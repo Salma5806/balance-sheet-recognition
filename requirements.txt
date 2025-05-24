@@ -3,5 +3,5 @@ transformers
 streamlit
 pdf2image
 ultralytics
-opencv-python==4.7.0.72
+opencv-python>=4.8.0
 Pillow
