@@ -1,3 +1,4 @@
 streamlit
 ultralytics
 transformers
+pdf2image
