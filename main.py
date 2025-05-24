@@ -81,12 +81,9 @@ if page == "Main":
                             os.unlink(tmp_path)
         except Exception as e:
             st.error(f"Error processing the PDF: {e}")
-
 # PAGE 2: APP 
 elif page == "App":
-    st.title("🛠️ Application Zone")
-    st.write("This is where you can add advanced features like prediction, OCR, etc.")
-
+    app_main()
 # PAGE 3: FINANCIAL DASHBOARD
 elif page == "Financial Dashboard":
     st.title("📊 Financial Dashboard")
