@@ -1,0 +1,15 @@
+streamlit
+ultralytics
+transformers
+SQLAlchemy
+psycopg2-binary                 
+plotly
+PaddleOCR
+torch
+layoutparser
+Pillow
+PyMuPDF
+opencv-python
+matplotlib
+sentencepiece
+scikit-learn
