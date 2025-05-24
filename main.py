@@ -4,6 +4,7 @@ from pdf2image import convert_from_bytes
 from ultralytics import YOLO
 import tempfile
 import os
+import cv2
 from PIL import Image
 
 # Set up the Streamlit app
