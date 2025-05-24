@@ -3,7 +3,6 @@ import streamlit as st
 from pdf2image import convert_from_bytes
 from ultralytics import YOLO
 import tempfile
-import cv2
 import os
 from PIL import Image
 
