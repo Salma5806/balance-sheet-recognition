@@ -43,7 +43,13 @@ def extract_year(text):
 
     return None
 
-def predict_labels(image_path, model_path="model.zip"):
+def predict_labels(image_path, model="model.zip"):
+    model_path = "model_unzipped"
+
+    if not os.path.exists(model_path):
+        with zipfile.ZipFile(model, 'r') as zip_ref:
+            zip_ref.extractall(model_path)
+
     processor = LayoutLMv3Processor.from_pretrained(model_path)
     model = AutoModelForTokenClassification.from_pretrained(model_path)
     model.eval()
