@@ -4,4 +4,4 @@ transformers
 pdf2image
 opencv-python-headless
 paddleocr
-paddlepaddle==2.5.2
+paddlepaddle
