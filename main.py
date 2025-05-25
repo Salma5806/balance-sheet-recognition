@@ -8,6 +8,7 @@ import cv2
 from PIL import Image
 from predict import predict_labels
 from app import app_main
+from dashboard_financial import app_main
 
 # Set up the Streamlit app
 #st.set_page_config(page_title="Table Detection App", layout="wide")
