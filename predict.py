@@ -8,17 +8,37 @@ import pandas as pd
 import zipfile
 import os
 
+def download_model():
+    model_dir = "final_model"
+    os.makedirs(model_dir, exist_ok=True)
+    
+    # Google Drive file IDs (replace with your actual IDs)
+    files = {
+        "vocab.json": "https://drive.google.com/uc?id=YOUR_VOCAB_ID",
+        "training_args.bin": "https://drive.google.com/uc?id=YOUR_TRAINING_ARGS_ID",
+        "tokenizer.json": "https://drive.google.com/uc?id=YOUR_TOKENIZER_JSON_ID",
+        "tokenizer_config.json": "https://drive.google.com/uc?id=YOUR_TOKENIZER_CONFIG_ID",
+        "special_tokens_map.json": "https://drive.google.com/uc?id=YOUR_SPECIAL_TOKENS_ID",
+        "preprocessor_config.json": "https://drive.google.com/uc?id=YOUR_PREPROCESSOR_ID",
+        "model.safetensors": "https://drive.google.com/uc?id=YOUR_MODEL_ID",
+        "merges.txt": "https://drive.google.com/uc?id=YOUR_MERGES_ID",
+        "config.json": "https://drive.google.com/uc?id=YOUR_CONFIG_ID"
+    }
+    
+    # Download missing files
+    for filename, url in files.items():
+        if not os.path.exists(os.path.join(model_dir, filename)):
+            gdown.download(url, os.path.join(model_dir, filename), quiet=False)
+    
+    return model_dir
+
 
 def predict_labels(image_path):
-    zip_path = "model.zip"
-    model_path = "model"
-
-    if not os.path.exists(model_path):
-        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-            zip_ref.extractall(model_path)
-
-    processor = LayoutLMv3Processor.from_pretrained(model_path)
-    model = AutoModelForTokenClassification.from_pretrained(model_path)
+   model_dir = download_model()
+    
+    # Load processor and model
+    processor = LayoutLMv3Processor.from_pretrained(model_dir)
+    model = AutoModelForTokenClassification.from_pretrained(model_dir)
     model.eval()
 
     image = Image.open(image_path).convert("RGB")
