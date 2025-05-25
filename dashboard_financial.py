@@ -1,4 +1,12 @@
 import streamlit as st
+
+# ✅ Page configuration — this MUST be the first Streamlit command
+st.set_page_config(
+    page_title="Financial Dashboard",
+    page_icon="💰",
+    layout="wide",
+)
+
 import pandas as pd
 import os
 import re
@@ -16,13 +24,6 @@ except ImportError:
 # Configure logging
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# Configuration de la page
-st.set_page_config(
-    page_title="Financial Dashboard",
-    page_icon="💰",
-    layout="wide",
-)
 
 st.title("📊 Financial Dashboard")
 
