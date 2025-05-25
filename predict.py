@@ -7,6 +7,7 @@ import re
 import pandas as pd
 import zipfile
 import os
+import gdown
 
 def load_model():
     model_dir = "final_model"
