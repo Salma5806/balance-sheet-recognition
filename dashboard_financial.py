@@ -126,7 +126,7 @@ def display_capital_pie_chart(df, selected_year, key_column):
     except ValueError as e:
         st.error(f"Erreur lors de la création du graphique : {str(e)}")
 
-def app_main():
+def app_financial():
     st.title("📊 Financial Dashboard")
     st.sidebar.header("Settings")
 
