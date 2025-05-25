@@ -85,6 +85,5 @@ if page == "Main":
 elif page == "App":
     app_main()
 # PAGE 3: FINANCIAL DASHBOARD
-elif page == "Financial Dashboard":
-    st.title("📊 Financial Dashboard")
-    st.write("Here you can visualize extracted financial tables as charts, KPIs, and more.")
+elif page == "dashboard_financial":
+    app_main()
