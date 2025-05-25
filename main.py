@@ -8,7 +8,7 @@ import cv2
 from PIL import Image
 from predict import predict_labels
 from app import app_main
-from dashboard_financial import app_main
+from dashboard_financial import app_financial
 
 # Set up the Streamlit app
 #st.set_page_config(page_title="Table Detection App", layout="wide")
@@ -87,4 +87,4 @@ elif page == "App":
     app_main()
 # PAGE 3: FINANCIAL DASHBOARD
 elif page == "dashboard_financial":
-    app_main()
+    app_financial()
