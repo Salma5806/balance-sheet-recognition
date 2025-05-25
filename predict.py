@@ -9,35 +9,32 @@ import zipfile
 import os
 import gdown
 
-def load_model():
-    model_dir = "final_model"
-    zip_path = "model.zip"
-    
-    # Skip if already downloaded and extracted
-    if not os.path.exists(model_dir):
-        os.makedirs(model_dir, exist_ok=True)
-        
-        # Download ZIP (convert sharing link to direct download)
-        zip_url = "https://drive.google.com/uc?id=1ddWEe8rUsKNYjPD2MglqzC55rJx8NVvz"
-        gdown.download(zip_url, zip_path, quiet=False)
-        
-        # Verify and extract
-        if zipfile.is_zipfile(zip_path):
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(model_dir)
-            os.remove(zip_path)  # Clean up
-        else:
-            raise ValueError("Downloaded file is not a valid ZIP archive")
-    
+def download_model():
+    model_dir = "model"
+    os.makedirs(model_dir, exist_ok=True)
+
+    files = {
+        "training_args.bin": "YOUR_FILE_ID_1",
+        "tokenizer.json": "YOUR_FILE_ID_2",
+        "tokenizer_config.json": "YOUR_FILE_ID_3",
+        "special_tokens_map.json": "YOUR_FILE_ID_4",
+        "preprocessor_config.json": "YOUR_FILE_ID_5",
+        "model.safetensors": "YOUR_FILE_ID_6",
+        "merges.txt": "YOUR_FILE_ID_7",
+        "config.json": "YOUR_FILE_ID_8"
+    }
+
+    for filename, file_id in files.items():
+        url = f"https://drive.google.com/uc?id={file_id}"
+        dest = os.path.join(model_dir, filename)
+        if not os.path.exists(dest):
+            gdown.download(url, dest, quiet=False)
+
     return model_dir
-
-
 def predict_labels(image_path):
-    model_dir = load_model()
-        
-    processor = LayoutLMv3Processor.from_pretrained(model_dir)
-    model = AutoModelForTokenClassification.from_pretrained(model_dir)
-    model.eval()
+    model_path = download_model()
+    processor = LayoutLMv3Processor.from_pretrained(model_path)
+    model = AutoModelForTokenClassification.from_pretrained(model_path)
         
 
     image = Image.open(image_path).convert("RGB")
