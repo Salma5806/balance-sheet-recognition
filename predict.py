@@ -14,8 +14,8 @@ def download_model():
     os.makedirs(model_dir, exist_ok=True)
 
     files = {
-        "vocab.json": "1_xc9LNHifTi0Ss-KkNeipuKymNWxqF-E"
-        "training_args.bin": "1agLl7Z45BFFenTAx-EXaCFD2OdM0WoAh"
+        "vocab.json": "1_xc9LNHifTi0Ss-KkNeipuKymNWxqF-E",
+        "training_args.bin": "1agLl7Z45BFFenTAx-EXaCFD2OdM0WoAh",
         "tokenizer.json": "1kejdvQTFz3CPpwbIU_qjiUos8fDZ_JX5",
         "tokenizer_config.json": "17THONWo3TWQySSGDeSx0d4I4ECnJVei7",
         "special_tokens_map.json": "1hBUhXTbHskYOX7IODOLSKyMnN8YBRmd1",
