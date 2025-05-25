@@ -14,14 +14,15 @@ def download_model():
     os.makedirs(model_dir, exist_ok=True)
 
     files = {
-        "training_args.bin": "YOUR_FILE_ID_1",
-        "tokenizer.json": "YOUR_FILE_ID_2",
-        "tokenizer_config.json": "YOUR_FILE_ID_3",
-        "special_tokens_map.json": "YOUR_FILE_ID_4",
-        "preprocessor_config.json": "YOUR_FILE_ID_5",
-        "model.safetensors": "YOUR_FILE_ID_6",
-        "merges.txt": "YOUR_FILE_ID_7",
-        "config.json": "YOUR_FILE_ID_8"
+        "vocab.json": "1_xc9LNHifTi0Ss-KkNeipuKymNWxqF-E"
+        "training_args.bin": "1agLl7Z45BFFenTAx-EXaCFD2OdM0WoAh"
+        "tokenizer.json": "1kejdvQTFz3CPpwbIU_qjiUos8fDZ_JX5",
+        "tokenizer_config.json": "17THONWo3TWQySSGDeSx0d4I4ECnJVei7",
+        "special_tokens_map.json": "1hBUhXTbHskYOX7IODOLSKyMnN8YBRmd1",
+        "preprocessor_config.json": "1_wu-CsF11BmRHk-Imz3wqEi9ydwZL5cu",
+        "model.safetensors": "1bgLe2SlcVUtj0ENIycAWW6mbuJiLt3PR",
+        "merges.txt": "1BByJ0L9uPfOu9ruEFqQZV5JwdMFK_8Tv",
+        "config.json": "1nP47mk-tgflmL9tkMgJHyOUfkXlLJ1Ee"
     }
 
     for filename, file_id in files.items():
