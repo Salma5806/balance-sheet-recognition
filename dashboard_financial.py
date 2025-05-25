@@ -1,37 +1,16 @@
 import streamlit as st
-
-# ✅ Page configuration — this MUST be the first Streamlit command
-st.set_page_config(
-    page_title="Financial Dashboard",
-    page_icon="💰",
-    layout="wide",
-)
-
 import pandas as pd
 import os
 import re
 from PIL import Image
 import matplotlib.pyplot as plt
 from ratio import clean_number, calculate_ratios, select_key_for_year
+from predict import predict_labels
 
-# Try importing predict_labels, handle import errors
-try:
-    from predict import predict_labels
-except ImportError:
-    st.error("Module 'predict' not found. Please ensure predict.py exists and contains the predict_labels function.")
-    st.stop()
-
-# Configure logging
-import logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-st.title("📊 Financial Dashboard")
+st.set_page_config(page_title="Financial Dashboard", layout="centered")
 
 # Chemin des images traitées
 OUTPUT_DIR = "output_images"
-if not os.path.exists(OUTPUT_DIR):
-    os.makedirs(OUTPUT_DIR)
-
 # Validate image files
 def is_valid_image(file_path):
     try:
@@ -78,7 +57,7 @@ def process_all_images():
 
         except Exception as e:
             logging.error(f"Erreur avec {image_file}: {str(e)}")
-            st.error(f"Erreur avec {image_file}: {str(e)}")
+            st.error(f"Erreur avec {image_file}: {str(e)}")st.set_page_config(page_title="LayoutLMv3 Prediction", layout="centered")
             continue
 
     if all_dfs:
@@ -148,6 +127,7 @@ def display_capital_pie_chart(df, selected_year, key_column):
         st.error(f"Erreur lors de la création du graphique : {str(e)}")
 
 def app_main():
+    st.title("📊 Financial Dashboard")
     st.sidebar.header("Settings")
 
     if st.sidebar.button("🔄 Process All Images"):
@@ -199,4 +179,3 @@ def app_main():
 
 # This makes sure it works if used as a standalone page or called in main
 if __name__ == "__main__":
-    app_main()
