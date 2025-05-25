@@ -179,3 +179,4 @@ def app_financial():
 
 # This makes sure it works if used as a standalone page or called in main
 if __name__ == "__main__":
+    app_financial()
