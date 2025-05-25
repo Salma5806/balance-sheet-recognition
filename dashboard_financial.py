@@ -2,15 +2,18 @@ import streamlit as st
 import pandas as pd
 import os
 import re
+import logging
 from PIL import Image
 import matplotlib.pyplot as plt
 from ratio import clean_number, calculate_ratios, select_key_for_year
 from predict import predict_labels
 
+# Setup page
 st.set_page_config(page_title="Financial Dashboard", layout="centered")
 
-# Chemin des images traitées
+# Directory containing images
 OUTPUT_DIR = "output_images"
+
 # Validate image files
 def is_valid_image(file_path):
     try:
@@ -19,6 +22,7 @@ def is_valid_image(file_path):
     except Exception:
         return False
 
+# List valid image files
 image_files = [
     f for f in os.listdir(OUTPUT_DIR)
     if f.lower().endswith((".png", ".jpg", ".jpeg")) and is_valid_image(os.path.join(OUTPUT_DIR, f))
@@ -56,8 +60,8 @@ def process_all_images():
                 all_dfs.append(df)
 
         except Exception as e:
-            logging.error(f"Erreur avec {image_file}: {str(e)}")
-            st.error(f"Erreur avec {image_file}: {str(e)}")st.set_page_config(page_title="LayoutLMv3 Prediction", layout="centered")
+            logging.error(f"Error with {image_file}: {str(e)}")
+            st.error(f"Erreur avec {image_file}: {str(e)}")
             continue
 
     if all_dfs:
@@ -73,10 +77,10 @@ def display_metrics(ratios, selected_year):
     cols = st.columns(4)
 
     metrics_config = {
-        "Ratio liquidité générale": { "format": ".2f" },
-        "Ratio de liquidité immédiate": { "format": ".2f" },
-        "Marge nette": { "format": ".2%" },
-        "Ratio de solvabilité": { "format": ".2f" },
+        "Ratio liquidité générale": {"format": ".2f"},
+        "Ratio de liquidité immédiate": {"format": ".2f"},
+        "Marge nette": {"format": ".2%"},
+        "Ratio de solvabilité": {"format": ".2f"},
     }
 
     for i, (metric, config) in enumerate(metrics_config.items()):
@@ -84,7 +88,7 @@ def display_metrics(ratios, selected_year):
             value = year_ratios[metric]
             cols[i].metric(label=metric, value=format(value, config["format"]))
         else:
-            cols[i].warning(f"{metric} No data available")
+            cols[i].warning(f"{metric} - No data available")
 
 def display_capital_pie_chart(df, selected_year, key_column):
     st.subheader("Répartition des Capitaux Propres")
@@ -157,12 +161,15 @@ def app_financial():
         except (ValueError, KeyError) as e:
             st.warning(f"Error calculating ratios: {str(e)}")
 
-        year_columns = [col for col in df.columns if re.match(r'^\d{4}$|^FY\d{4}$', str(col).strip())
-                        and col not in [key_column, 'source_image']]
+        year_columns = [
+            col for col in df.columns
+            if re.match(r'^\d{4}$|^FY\d{4}$', str(col).strip())
+            and col not in [key_column, 'source_image']
+        ]
 
         if year_columns:
             selected_year = st.sidebar.selectbox(
-                 "Select year",
+                "Select year",
                 options=sorted(year_columns, reverse=True),
                 index=0
             )
@@ -177,6 +184,6 @@ def app_financial():
         else:
             st.warning("No year columns found in the data")
 
-# This makes sure it works if used as a standalone page or called in main
+# This makes sure it runs if executed directly
 if __name__ == "__main__":
     app_financial()
