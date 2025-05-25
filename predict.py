@@ -5,7 +5,8 @@ import torch
 import numpy as np
 import re
 import pandas as pd
-import gdown
+import zipfile
+import os
 
 def unnormalize_box(box, width, height):
     return [
@@ -43,8 +44,14 @@ def extract_year(text):
         return '20' + match.group(1)
 
     return None
-model_path = gdown.download("https://drive.google.com/drive/folders/1TnwJKw1dwi0XcJLTWe91Pikof4GX4b6T?usp=drive_link")
 def predict_labels(image_path, model=model_path):
+    zip_path = "model.zip"
+    model_path = "model"
+
+if not os.path.exists(model_path):
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(model_path)
+
     processor = LayoutLMv3Processor.from_pretrained(model_path)
     model = AutoModelForTokenClassification.from_pretrained(model_path)
     model.eval()
