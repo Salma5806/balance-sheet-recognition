@@ -8,49 +8,14 @@ import pandas as pd
 import zipfile
 import os
 
-def unnormalize_box(box, width, height):
-    return [
-        int(box[0] / 1000 * width),
-        int(box[1] / 1000 * height),
-        int(box[2] / 1000 * width),
-        int(box[3] / 1000 * height)
-    ]
 
-def extract_year(text):
-    text = text.lower().replace('–', '-')
-
-    # Exemples directs : 2023, 2024...
-    match = re.search(r'\b(20[2-3][0-9])\b', text)
-    if match:
-        return match.group(1)
-
-    # Formats comme 31/12/2023, 31-12-2023, 31.12.2023, 31 décembre 2022
-    match = re.search(r'(31[^\d]?(?:12|déc)[^\d]?(20[2-3][0-9]))', text)
-    if match:
-        return match.group(2)
-
-    # Format court : 31-déc.-23
-    match = re.search(r'31[^\d]?(?:12|déc)[^\d]?([0-9]{2})', text)
-    if match:
-        return '20' + match.group(1)
-
-    # Format 2023R, 2024P, etc.
-    match = re.search(r'\b(20[2-3][0-9])[RP]?\b', text)
-    if match:
-        return match.group(1)
-    
-    match =  re.search(r'31[^\d]?(?:12|déc)[^\d]?([0-9]{2})', text)
-    if match:
-        return '20' + match.group(1)
-
-    return None
-def predict_labels(image_path, model=model_path):
+def predict_labels(image_path):
     zip_path = "model.zip"
     model_path = "model"
 
-if not os.path.exists(model_path):
-    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-        zip_ref.extractall(model_path)
+    if not os.path.exists(model_path):
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(model_path)
 
     processor = LayoutLMv3Processor.from_pretrained(model_path)
     model = AutoModelForTokenClassification.from_pretrained(model_path)
@@ -111,7 +76,6 @@ if not os.path.exists(model_path):
             'box': unnormalize_box(box, w, h)
         })
 
-    # Supprimer les doublons
     unique_results = []
     seen = set()
     for item in results:
@@ -126,7 +90,6 @@ if not os.path.exists(model_path):
     key_items = sorted([item for item in unique_results if item['label'] == 'key'], key=lambda x: x['box'][1])
     value_items = [item for item in unique_results if item['label'] == 'value']
 
-    # Détection des années avec position x
     year_positions = {}
     for item in year_items:
         year = extract_year(item['text'])
@@ -134,14 +97,12 @@ if not os.path.exists(model_path):
             year_positions[year] = item['box'][0]
             print(f"Année détectée : {year}, Position x : {item['box'][0]}")
 
-    # Création du tableau final
     data = []
     for key_item in key_items:
         key_text = key_item['text']
         key_box = key_item['box']
         key_y_min = key_box[1]
 
-        # Chercher la note associée (facultatif)
         note = ''
         for name_item in name_items:
             if 'CP-' in name_item['text'] or 'p-' in name_item['text']:
@@ -150,7 +111,6 @@ if not os.path.exists(model_path):
                     note = name_item['text']
                     break
 
-        # Associer chaque année à sa valeur la plus proche (en x et y)
         year_values = {}
         for value_item in value_items:
             value_box = value_item['box']
@@ -165,7 +125,7 @@ if not os.path.exists(model_path):
         row = {
             'key': key_text
         }
-        for year in sorted(year_positions.keys(), reverse=True):  # 2023, 2022, ...
+        for year in sorted(year_positions.keys(), reverse=True):
             row[year] = year_values.get(year, 0)
         data.append(row)
 
