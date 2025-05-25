@@ -9,6 +9,42 @@ import zipfile
 import os
 import gdown
 
+def unnormalize_box(box, width, height):
+    return [
+        int(box[0] / 1000 * width),
+        int(box[1] / 1000 * height),
+        int(box[2] / 1000 * width),
+        int(box[3] / 1000 * height)
+    ]
+def extract_year(text):
+    text = text.lower().replace('–', '-')
+
+    # Exemples directs : 2023, 2024...
+    match = re.search(r'\b(20[2-3][0-9])\b', text)
+    if match:
+        return match.group(1)
+
+    # Formats comme 31/12/2023, 31-12-2023, 31.12.2023, 31 décembre 2022
+    match = re.search(r'(31[^\d]?(?:12|déc)[^\d]?(20[2-3][0-9]))', text)
+    if match:
+        return match.group(2)
+
+    # Format court : 31-déc.-23
+    match = re.search(r'31[^\d]?(?:12|déc)[^\d]?([0-9]{2})', text)
+    if match:
+        return '20' + match.group(1)
+
+    # Format 2023R, 2024P, etc.
+    match = re.search(r'\b(20[2-3][0-9])[RP]?\b', text)
+    if match:
+        return match.group(1)
+    
+    match =  re.search(r'31[^\d]?(?:12|déc)[^\d]?([0-9]{2})', text)
+    if match:
+        return '20' + match.group(1)
+
+    return None
+
 def download_model():
     model_dir = "model"
     os.makedirs(model_dir, exist_ok=True)
