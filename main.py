@@ -5,6 +5,8 @@ import tempfile
 import cv2
 import os
 from PIL import Image
+from app import app_main
+from dashboard_financial import app_financial
 
 # Set up the Streamlit app
 st.set_page_config(page_title="Table Detection App", layout="wide")
