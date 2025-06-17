@@ -86,4 +86,4 @@ elif page == "App":
     app_main()
 # PAGE 3: FINANCIAL DASHBOARD
 elif page == "dashboard_financial":
-    app_financial()
+   app_financial()
