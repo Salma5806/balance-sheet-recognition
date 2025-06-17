@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 from ratio import clean_number, calculate_ratios, select_key_for_year
 from predict import predict_labels
 
+# IMPORTANT : Plus d'appel à st.set_page_config ici !
+
+# Directory containing images
 OUTPUT_DIR = "output_images"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -18,17 +21,15 @@ def is_valid_image(file_path):
     except Exception:
         return False
 
+image_files = [
+    f for f in os.listdir(OUTPUT_DIR)
+    if f.lower().endswith((".png", ".jpg", ".jpeg")) and is_valid_image(os.path.join(OUTPUT_DIR, f))
+]
+
 def load_image(image_file):
     return os.path.join(OUTPUT_DIR, image_file)
 
 def process_all_images():
-    image_files = []
-    if os.path.exists(OUTPUT_DIR):
-        image_files = [
-            f for f in os.listdir(OUTPUT_DIR)
-            if f.lower().endswith((".png", ".jpg", ".jpeg")) and is_valid_image(os.path.join(OUTPUT_DIR, f))
-        ]
-
     all_dfs = []
 
     if not image_files:
@@ -42,15 +43,20 @@ def process_all_images():
         try:
             status_text.text(f"Processing {image_file}... ({i+1}/{len(image_files)})")
             progress_bar.progress((i + 1) / len(image_files))
+
             image_path = load_image(image_file)
             result = predict_labels(image_path)
+
             if result and "df" in result:
                 df = result["df"]
                 df["source_image"] = image_file
+
                 numeric_columns = [col for col in df.columns if col not in ['key', 'source_image']]
                 for col in numeric_columns:
                     df[col] = df[col].apply(clean_number)
+
                 all_dfs.append(df)
+
         except Exception as e:
             logging.error(f"Error with {image_file}: {str(e)}")
             st.error(f"Erreur avec {image_file}: {str(e)}")
@@ -118,6 +124,7 @@ def display_capital_pie_chart(df, selected_year, key_column):
         ax.axis('equal')
         plt.title(f"Composition des capitaux propres ({selected_year})")
         st.pyplot(fig)
+
     except ValueError as e:
         st.error(f"Erreur lors de la création du graphique : {str(e)}")
 
@@ -131,7 +138,7 @@ def app_financial():
                 final_df = process_all_images()
                 if final_df is not None:
                     st.session_state.df = final_df
-                    st.success("Images processed successfully!")
+                    st.success(f"{len(image_files)} images processed successfully!")
 
     if st.sidebar.button("🗑 Réinitialiser"):
         st.session_state.clear()
@@ -174,3 +181,7 @@ def app_financial():
             st.dataframe(df)
         else:
             st.warning("No year columns found in the data")
+
+# Exécution si appelé directement
+if __name__ == "__main__":
+    app_financial()
