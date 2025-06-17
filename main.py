@@ -1,7 +1,7 @@
 import streamlit as st
 
-# L'appel à set_page_config doit être le tout premier code Streamlit exécuté
-st.set_page_config(page_title="Financial App", layout="wide")
+# <-- APPEL UNIQUE À SET_PAGE_CONFIG EN TOUT DEBUT DU PREMIER FICHIER -->
+st.set_page_config(page_title="Balance Sheet Recognition App", layout="wide")
 
 from pdf2image import convert_from_bytes
 from ultralytics import YOLO
@@ -9,6 +9,7 @@ import tempfile
 import os
 import cv2
 from PIL import Image
+
 from predict import predict_labels
 from app import app_main
 from dashboard_financial import app_financial
@@ -17,13 +18,11 @@ from dashboard_financial import app_financial
 st.sidebar.title("📁 Navigation")
 page = st.sidebar.radio("Go to:", ["Main", "App", "Financial Dashboard"])
 
-# Output directory for extracted tables
 OUTPUT_DIR = "output_images"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# YOLO table detection function
 def extract_tables(image_path, output_dir=OUTPUT_DIR, page_index=0):
-    model = YOLO('best.pt')  # Replace with your model path
+    model = YOLO('best.pt')  # Modifie le chemin si besoin
     img = cv2.imread(image_path)
     if img is None:
         raise ValueError(f"Failed to read image: {image_path}")
@@ -45,7 +44,6 @@ def extract_tables(image_path, output_dir=OUTPUT_DIR, page_index=0):
                     extracted_paths.append(output_path)
     return extracted_paths
 
-# Page routing
 if page == "Main":
     st.title("📄 Balance Sheet Detection from PDF Report")
 
