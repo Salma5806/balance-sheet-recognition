@@ -8,13 +8,11 @@ import matplotlib.pyplot as plt
 from ratio import clean_number, calculate_ratios, select_key_for_year
 from predict import predict_labels
 
-# Setup page
-st.set_page_config(page_title="Financial Dashboard", layout="centered")
+# IMPORTANT : Plus d'appel à st.set_page_config ici !
 
 # Directory containing images
 OUTPUT_DIR = "output_images"
 
-# Validate image files
 def is_valid_image(file_path):
     try:
         Image.open(file_path).verify()
@@ -22,7 +20,6 @@ def is_valid_image(file_path):
     except Exception:
         return False
 
-# List valid image files
 image_files = [
     f for f in os.listdir(OUTPUT_DIR)
     if f.lower().endswith((".png", ".jpg", ".jpeg")) and is_valid_image(os.path.join(OUTPUT_DIR, f))
@@ -184,6 +181,6 @@ def app_financial():
         else:
             st.warning("No year columns found in the data")
 
-# This makes sure it runs if executed directly
+# Exécution si appelé directement
 if __name__ == "__main__":
     app_financial()
