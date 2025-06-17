@@ -1,4 +1,3 @@
-# main.py
 import streamlit as st
 from pdf2image import convert_from_bytes
 from ultralytics import YOLO
@@ -6,24 +5,22 @@ import tempfile
 import cv2
 import os
 from PIL import Image
-from pages import Main, App, Dashboard_Financial
 
-# Configuration Streamlit
+# Set up the Streamlit app
 st.set_page_config(page_title="Table Detection App", layout="wide")
 st.sidebar.title("📁 Navigation")
 page = st.sidebar.radio("Go to:", ["Main", "App", "Financial Dashboard"])
 
-# Répertoire de sortie pour les tableaux extraits
+# Output directory for extracted tables
 OUTPUT_DIR = "output_images"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Fonction de détection de tableaux avec YOLO
+# YOLO table detection function
 def extract_tables(image_path, output_dir=OUTPUT_DIR, page_index=0):
-    model = YOLO('best.pt')
+    model = YOLO('best.pt')  # Replace with the relative path if needed
     img = cv2.imread(image_path)
     if img is None:
-        raise ValueError(f"Erreur lors de la lecture de l'image : {image_path}")
-
+        raise ValueError(f"Failed to read image: {image_path}")
     h, w = img.shape[:2]
     results = model(img)
     extracted_paths = []
@@ -42,7 +39,7 @@ def extract_tables(image_path, output_dir=OUTPUT_DIR, page_index=0):
                     extracted_paths.append(output_path)
     return extracted_paths
 
-# PAGE 1 : Main
+# PAGE 1: MAIN
 if page == "Main":
     st.title("📄 Balance Sheet Detection from PDF Report")
 
@@ -57,7 +54,7 @@ if page == "Main":
                 with cols[i % len(cols)]:
                     st.image(img, caption=f"Page {i+1}", width=160)
 
-            if st.button("🚀 Run Table Detection (YOLO)"):
+            if st.button("🚀 Run YOLOv11 Table Detection"):
                 st.subheader("📍 Detection Results")
                 for i, img in enumerate(images):
                     with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
@@ -77,14 +74,17 @@ if page == "Main":
                     except Exception as e:
                         st.error(f"Error on page {i+1}: {e}")
                     finally:
-                        os.unlink(tmp_path)
+                        if os.path.exists(tmp_path):
+                            os.unlink(tmp_path)
         except Exception as e:
             st.error(f"Error processing the PDF: {e}")
 
-# PAGE 2 : App
+# PAGE 2: APP 
 elif page == "App":
-    App.app_main()
+    st.title("🛠️ Application Zone")
+    st.write("This is where you can add advanced features like prediction, OCR, etc.")
 
-# PAGE 3 : Financial Dashboard
+# PAGE 3: FINANCIAL DASHBOARD
 elif page == "Financial Dashboard":
-    Dashboard_Financial.app_main()
+    st.title("📊 Financial Dashboard")
+    st.write("Here you can visualize extracted financial tables as charts, KPIs, and more.")
