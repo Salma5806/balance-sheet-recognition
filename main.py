@@ -85,5 +85,5 @@ if page == "Main":
 elif page == "App":
     app_main()
 # PAGE 3: FINANCIAL DASHBOARD
-elif page == "dashboard_financial":
+elif page == "Financial Dashboard":
    app_financial()
