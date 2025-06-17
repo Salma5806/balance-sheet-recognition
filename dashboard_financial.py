@@ -1,4 +1,7 @@
 import streamlit as st
+
+st.set_page_config(page_title="Financial Dashboard", layout="centered")
+
 import pandas as pd
 import os
 import re
@@ -7,9 +10,6 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from ratio import clean_number, calculate_ratios, select_key_for_year
 from predict import predict_labels
-
-# Setup page
-st.set_page_config(page_title="Financial Dashboard", layout="centered")
 
 # Directory containing images
 OUTPUT_DIR = "output_images"
