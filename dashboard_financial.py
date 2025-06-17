@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from ratio import clean_number, calculate_ratios, select_key_for_year
 from predict import predict_labels
 
+OUTPUT_DIR = "output_images"
 # Setup page
 st.set_page_config(page_title="Financial Dashboard", layout="centered")
 
