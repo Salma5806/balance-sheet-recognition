@@ -9,18 +9,12 @@ from ratio import clean_number, calculate_ratios, select_key_for_year
 from predict import predict_labels
 
 OUTPUT_DIR = "output_images"
-# Setup page
-st.set_page_config(page_title="Financial Dashboard", layout="centered")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-if not os.path.exists(OUTPUT_DIR):
-    st.warning(f"Le dossier {OUTPUT_DIR} n'existe pas. Veuillez en créer un et y placer les images.")
-    image_files = []
-else:
-    image_files = [
-        f for f in os.listdir(OUTPUT_DIR)
-        if f.lower().endswith((".png", ".jpg", ".jpeg")) and is_valid_image(os.path.join(OUTPUT_DIR, f))
-    ]
-
+image_files = [
+    f for f in os.listdir(OUTPUT_DIR)
+    if f.lower().endswith((".png", ".jpg", ".jpeg")) and is_valid_image(os.path.join(OUTPUT_DIR, f))
+]
 
 # Validate image files
 def is_valid_image(file_path):
