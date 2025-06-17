@@ -3,28 +3,27 @@ import streamlit as st
 from pdf2image import convert_from_bytes
 from ultralytics import YOLO
 import tempfile
-import os
 import cv2
+import os
 from PIL import Image
-from predict import predict_labels
-from app import app_main
-from dashboard_financial import app_financial
+from pages import Main, App, Dashboard_Financial
 
-# Set up the Streamlit app
-#st.set_page_config(page_title="Table Detection App", layout="wide")
+# Configuration Streamlit
+st.set_page_config(page_title="Table Detection App", layout="wide")
 st.sidebar.title("📁 Navigation")
 page = st.sidebar.radio("Go to:", ["Main", "App", "Financial Dashboard"])
 
-# Output directory for extracted tables
+# Répertoire de sortie pour les tableaux extraits
 OUTPUT_DIR = "output_images"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# YOLO table detection function
+# Fonction de détection de tableaux avec YOLO
 def extract_tables(image_path, output_dir=OUTPUT_DIR, page_index=0):
-    model = YOLO('best.pt')  # Replace with the relative path if needed
+    model = YOLO('best.pt')
     img = cv2.imread(image_path)
     if img is None:
-        raise ValueError(f"Failed to read image: {image_path}")
+        raise ValueError(f"Erreur lors de la lecture de l'image : {image_path}")
+
     h, w = img.shape[:2]
     results = model(img)
     extracted_paths = []
@@ -43,7 +42,7 @@ def extract_tables(image_path, output_dir=OUTPUT_DIR, page_index=0):
                     extracted_paths.append(output_path)
     return extracted_paths
 
-# PAGE 1: MAIN
+# PAGE 1 : Main
 if page == "Main":
     st.title("📄 Balance Sheet Detection from PDF Report")
 
@@ -58,7 +57,7 @@ if page == "Main":
                 with cols[i % len(cols)]:
                     st.image(img, caption=f"Page {i+1}", width=160)
 
-            if st.button("🚀 Run YOLOv11 Table Detection"):
+            if st.button("🚀 Run Table Detection (YOLO)"):
                 st.subheader("📍 Detection Results")
                 for i, img in enumerate(images):
                     with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
@@ -78,13 +77,14 @@ if page == "Main":
                     except Exception as e:
                         st.error(f"Error on page {i+1}: {e}")
                     finally:
-                        if os.path.exists(tmp_path):
-                            os.unlink(tmp_path)
+                        os.unlink(tmp_path)
         except Exception as e:
             st.error(f"Error processing the PDF: {e}")
-# PAGE 2: APP 
+
+# PAGE 2 : App
 elif page == "App":
-    app_main()
-# PAGE 3: FINANCIAL DASHBOARD
+    App.app_main()
+
+# PAGE 3 : Financial Dashboard
 elif page == "Financial Dashboard":
-    app_financial()
+    Dashboard_Financial.app_main()
