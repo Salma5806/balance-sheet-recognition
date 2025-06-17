@@ -12,6 +12,7 @@ from predict import predict_labels
 
 # Directory containing images
 OUTPUT_DIR = "output_images"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def is_valid_image(file_path):
     try:
