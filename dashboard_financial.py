@@ -8,15 +8,13 @@ import matplotlib.pyplot as plt
 from ratio import clean_number, calculate_ratios, select_key_for_year
 from predict import predict_labels
 
+# ---------- CONFIGURATION ----------
 OUTPUT_DIR = "output_images"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-image_files = [
-    f for f in os.listdir(OUTPUT_DIR)
-    if f.lower().endswith((".png", ".jpg", ".jpeg")) and is_valid_image(os.path.join(OUTPUT_DIR, f))
-]
+# ---------- FONCTIONS UTILES ----------
 
-# Validate image files
+# 1. Vérifie si une image est valide
 def is_valid_image(file_path):
     try:
         Image.open(file_path).verify()
@@ -24,20 +22,21 @@ def is_valid_image(file_path):
     except Exception:
         return False
 
-# List valid image files
-image_files = [
-    f for f in os.listdir(OUTPUT_DIR)
-    if f.lower().endswith((".png", ".jpg", ".jpeg")) and is_valid_image(os.path.join(OUTPUT_DIR, f))
-]
-
+# 2. Charger l’image depuis le dossier
 def load_image(image_file):
     return os.path.join(OUTPUT_DIR, image_file)
 
+# 3. Traiter toutes les images détectées
 def process_all_images():
+    image_files = [
+        f for f in os.listdir(OUTPUT_DIR)
+        if f.lower().endswith((".png", ".jpg", ".jpeg")) and is_valid_image(os.path.join(OUTPUT_DIR, f))
+    ]
+
     all_dfs = []
 
     if not image_files:
-        st.warning(f"No valid images found in {OUTPUT_DIR}")
+        st.warning(f"Aucune image valide trouvée dans le dossier : {OUTPUT_DIR}")
         return None
 
     progress_bar = st.progress(0)
@@ -45,7 +44,7 @@ def process_all_images():
 
     for i, image_file in enumerate(image_files):
         try:
-            status_text.text(f"Processing {image_file}... ({i+1}/{len(image_files)})")
+            status_text.text(f"Traitement de {image_file}... ({i+1}/{len(image_files)})")
             progress_bar.progress((i + 1) / len(image_files))
 
             image_path = load_image(image_file)
@@ -62,17 +61,18 @@ def process_all_images():
                 all_dfs.append(df)
 
         except Exception as e:
-            logging.error(f"Error with {image_file}: {str(e)}")
-            st.error(f"Erreur avec {image_file}: {str(e)}")
+            logging.error(f"Erreur avec {image_file} : {str(e)}")
+            st.error(f"Erreur avec {image_file} : {str(e)}")
             continue
 
     if all_dfs:
         return pd.concat(all_dfs, ignore_index=True)
     return None
 
+# 4. Afficher les ratios financiers
 def display_metrics(ratios, selected_year):
     if not ratios or selected_year not in ratios:
-        st.warning(f"No data available for year {selected_year}")
+        st.warning(f"Aucune donnée disponible pour l'année {selected_year}")
         return
 
     year_ratios = ratios[selected_year]
@@ -90,8 +90,9 @@ def display_metrics(ratios, selected_year):
             value = year_ratios[metric]
             cols[i].metric(label=metric, value=format(value, config["format"]))
         else:
-            cols[i].warning(f"{metric} - No data available")
+            cols[i].warning(f"{metric} - Donnée non disponible")
 
+# 5. Afficher le graphique de répartition des capitaux propres
 def display_capital_pie_chart(df, selected_year, key_column):
     st.subheader("Répartition des Capitaux Propres")
 
@@ -108,7 +109,7 @@ def display_capital_pie_chart(df, selected_year, key_column):
     filtered_data = {k: abs(v) for k, v in capital_data.items() if v not in [None, 0]}
 
     if not filtered_data:
-        st.warning("No valid data available for equity composition")
+        st.warning("Aucune donnée valide disponible pour la composition des capitaux propres")
         return
 
     labels = list(filtered_data.keys())
@@ -132,26 +133,28 @@ def display_capital_pie_chart(df, selected_year, key_column):
     except ValueError as e:
         st.error(f"Erreur lors de la création du graphique : {str(e)}")
 
+# ---------- INTERFACE PRINCIPALE ----------
 def app_financial():
-    st.title("📊 Financial Dashboard")
-    st.sidebar.header("Settings")
+    st.title("📊 Tableau de Bord Financier")
+    st.sidebar.header("Paramètres")
 
-    if st.sidebar.button("🔄 Process All Images"):
+    if st.sidebar.button("🔄 Traiter toutes les images"):
         if "df" not in st.session_state:
-            with st.spinner("Extracting data..."):
+            with st.spinner("Extraction des données en cours..."):
                 final_df = process_all_images()
                 if final_df is not None:
                     st.session_state.df = final_df
-                    st.success(f"{len(image_files)} images processed successfully!")
+                    st.success("✅ Données extraites avec succès.")
 
     if st.sidebar.button("🗑 Réinitialiser"):
         st.session_state.clear()
-        st.success("Session reset. Please reload the data.")
+        st.success("Session réinitialisée. Rechargez les données.")
 
     if "df" in st.session_state:
         df = st.session_state["df"]
+
         key_column = st.sidebar.selectbox(
-            "Select key column",
+            "Sélectionnez la colonne des clés",
             options=list(df.columns),
             index=list(df.columns).index('key') if 'key' in df.columns else 0
         )
@@ -161,7 +164,7 @@ def app_financial():
             if ratios:
                 st.session_state.ratios = ratios
         except (ValueError, KeyError) as e:
-            st.warning(f"Error calculating ratios: {str(e)}")
+            st.warning(f"Erreur lors du calcul des ratios : {str(e)}")
 
         year_columns = [
             col for col in df.columns
@@ -171,7 +174,7 @@ def app_financial():
 
         if year_columns:
             selected_year = st.sidebar.selectbox(
-                "Select year",
+                "Sélectionnez l'année",
                 options=sorted(year_columns, reverse=True),
                 index=0
             )
@@ -181,11 +184,11 @@ def app_financial():
 
             display_capital_pie_chart(df, selected_year, key_column)
 
-            st.subheader("Raw Data")
+            st.subheader("📋 Données brutes")
             st.dataframe(df)
         else:
-            st.warning("No year columns found in the data")
+            st.warning("Aucune colonne d'année trouvée dans les données.")
 
-# This makes sure it runs if executed directly
+# ---------- EXECUTION ----------
 if __name__ == "__main__":
     app_financial()
