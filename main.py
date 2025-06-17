@@ -1,3 +1,5 @@
+from app import app_main
+from dashboard_financial import app_financial
 import streamlit as st
 from pdf2image import convert_from_bytes
 from ultralytics import YOLO
@@ -5,21 +7,22 @@ import tempfile
 import cv2
 import os
 from PIL import Image
+
+# Importer tes apps (modifier selon tes vrais fichiers)
 from app import app_main
 from dashboard_financial import app_financial
 
-# Set up the Streamlit app
+# Config Streamlit (doit être en premier)
 st.set_page_config(page_title="Table Detection App", layout="wide")
 st.sidebar.title("📁 Navigation")
 page = st.sidebar.radio("Go to:", ["Main", "App", "Financial Dashboard"])
 
-# Output directory for extracted tables
+# Dossier pour les images extraites
 OUTPUT_DIR = "output_images"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# YOLO table detection function
 def extract_tables(image_path, output_dir=OUTPUT_DIR, page_index=0):
-    model = YOLO('best.pt')  # Replace with the relative path if needed
+    model = YOLO('best.pt')
     img = cv2.imread(image_path)
     if img is None:
         raise ValueError(f"Failed to read image: {image_path}")
@@ -41,7 +44,7 @@ def extract_tables(image_path, output_dir=OUTPUT_DIR, page_index=0):
                     extracted_paths.append(output_path)
     return extracted_paths
 
-# PAGE 1: MAIN
+
 if page == "Main":
     st.title("📄 Balance Sheet Detection from PDF Report")
 
@@ -80,9 +83,6 @@ if page == "Main":
                             os.unlink(tmp_path)
         except Exception as e:
             st.error(f"Error processing the PDF: {e}")
-
-# PAGE 2: APP 
-
 
 elif page == "App":
     app_main()
