@@ -1,6 +1,4 @@
 import streamlit as st
-st.set_page_config(page_title="Financial Dashboard", layout="centered")  # <--- doit être le 1er appel Streamlit
-
 import pandas as pd
 import os
 import re
