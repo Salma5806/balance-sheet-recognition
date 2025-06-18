@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 from ratio import clean_number, calculate_ratios, select_key_for_year
 from predict import predict_labels
 
-
 # Directory containing images
 OUTPUT_DIR = "output_images"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
