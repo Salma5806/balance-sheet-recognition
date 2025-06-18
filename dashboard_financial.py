@@ -9,7 +9,7 @@ from ratio import clean_number, calculate_ratios, select_key_for_year
 from predict import predict_labels
 
 
-st.set_page_config(page_title="Financial Dashboard", layout="centered")
+#st.set_page_config(page_title="Financial Dashboard", layout="centered")
 # Directory containing images
 OUTPUT_DIR = "output_images"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
