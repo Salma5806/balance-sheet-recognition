@@ -12,7 +12,7 @@ from predict import predict_labels
 # Directory containing images
 OUTPUT_DIR = "output_images"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-st.set_page_config(page_title="Financial Dashboard", layout="centered")
+#st.set_page_config(page_title="Financial Dashboard", layout="centered")
 # Validate image files
 def is_valid_image(file_path):
     try:
